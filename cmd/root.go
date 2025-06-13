@@ -8,11 +8,15 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "hugo",
-	Short: "Hugo is a very fast static site generator",
-	Long: `A Fast and Flexible Static Site Generator built with
-					love by spf13 and friends in Go.
-					Complete documentation is available at https://gohugo.io/documentation/`,
+	Use:   "dotman",
+	Short: "Dotman is an environment manager",
+	Long: `Dotman is a comprehensive environment manager that helps you:
+- Manage and sync your dotfiles across different machines
+- Track and install system packages and applications
+- Backup and restore your system configurations
+- Automate environment setup with simple commands
+
+Perfect for developers who want to maintain consistent environments across multiple systems.`,
 }
 
 func Execute() {
