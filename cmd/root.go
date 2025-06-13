@@ -7,16 +7,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const logo = `     _       _                         
+    | |     | |                        
+  __| | ___ | |_ _ __ ___   __ _ _ __  
+ / _` + "`" + ` |/ _ \| __| '_ ` + "`" + ` _ \ / _` + "`" + ` | '_ \ 
+| (_| | (_) | |_| | | | | | (_| | | | |
+ \__,_|\___/ \__|_| |_| |_|\__,_|_| |_|`
+
 var rootCmd = &cobra.Command{
 	Use:   "dotman",
-	Short: "Dotman is an environment manager",
-	Long: `Dotman is a comprehensive environment manager that helps you:
+	Short: logo,
+	Long: logo + `
+a comprehensive environment manager
+
 - Manage and sync your dotfiles across different machines
 - Track and install system packages and applications
 - Backup and restore your system configurations
-- Automate environment setup with simple commands
-
-Perfect for developers who want to maintain consistent environments across multiple systems.`,
+- Automate environment setup with simple commands`,
 }
 
 func Execute() {
