@@ -8,18 +8,27 @@ import (
 )
 
 type baseConfig struct {
-	viper *viper.Viper
+	viper  *viper.Viper
+	Values *baseConfigValues
 }
 
-func (c *baseConfig) Init() error {
+func (c *baseConfig) init() error {
 	c.viper.SetConfigName("dotman.conf")
 	c.viper.SetConfigType("toml")
 	c.viper.AddConfigPath("$HOME/.config/dotman")
 	c.viper.AddConfigPath("/etc/dotman")
 	c.viper.AddConfigPath(".")
+
 	if err := c.viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("error reading config file: %v", err)
 	}
+
+	values, err := newBaseConfigValues(c.viper)
+	if err != nil {
+		return fmt.Errorf("error parsing config: %v", err)
+	}
+	c.Values = values
+
 	return nil
 }
 
@@ -38,7 +47,7 @@ var once sync.Once
 func BaseConfig() (*baseConfig, error) {
 	once.Do(func() {
 		config = newBaseConfig()
-		initError = config.Init()
+		initError = config.init()
 	})
 	if initError != nil {
 		return nil, initError
