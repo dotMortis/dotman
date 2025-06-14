@@ -42,6 +42,10 @@ func (v *StringValue) IsValid() bool {
 	return valueValidate(v) == nil
 }
 
+func (v *StringValue) String() string {
+	return v.Value()
+}
+
 func NewStringValue(key string, fallback string, required bool, viper *viper.Viper) *StringValue {
 	return &StringValue{
 		key:      key,

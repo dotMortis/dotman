@@ -13,10 +13,14 @@ type baseConfigValues struct {
 }
 
 func (b *baseConfigValues) validate() error {
-	if valid := b.Giturl.IsValid(); !valid {
+	if !b.Giturl.IsValid() {
 		return fmt.Errorf("giturl is required")
 	}
 	return nil
+}
+
+func (b *baseConfigValues) String() string {
+	return fmt.Sprintf("{Giturl: %s}", b.Giturl)
 }
 
 func newBaseConfigValues(viper *viper.Viper) (*baseConfigValues, error) {

@@ -13,7 +13,7 @@ func main() {
 		fmt.Println(fmt.Errorf("error initializing config: %v", err))
 		os.Exit(1)
 	}
-	fmt.Printf("VALUES: %+v\n", config.Values.Giturl.Value())
+	fmt.Printf("VALUES: %+v\n", config)
 	os.Exit(1)
 	cmd.Execute()
 }

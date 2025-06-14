@@ -32,17 +32,21 @@ func (c *baseConfig) init() error {
 	return nil
 }
 
-func newBaseConfig() *baseConfig {
-	viper := viper.New()
+func (c *baseConfig) String() string {
+	return fmt.Sprintf("{Values: %s}", c.Values)
+}
 
+func newBaseConfig() *baseConfig {
 	return &baseConfig{
-		viper: viper,
+		viper: viper.New(),
 	}
 }
 
-var config *baseConfig = nil
-var initError error = nil
-var once sync.Once
+var (
+	config    *baseConfig = nil
+	initError error       = nil
+	once      sync.Once
+)
 
 func BaseConfig() (*baseConfig, error) {
 	once.Do(func() {
