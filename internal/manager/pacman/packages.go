@@ -1,9 +1,9 @@
 package pacman
 
 import (
-	"dotman/bashcmd"
-	meta "dotman/metafile/pacman"
-	"dotman/pacman"
+	"dotman/internal/bashcmd"
+	meta "dotman/internal/metafile/pacman"
+	"dotman/internal/pacman"
 	"fmt"
 	"slices"
 	"strings"

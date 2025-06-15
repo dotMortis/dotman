@@ -1,6 +1,6 @@
 package pacman
 
-import "dotman/metafile"
+import "dotman/internal/metafile"
 
 type PacmanPackages struct {
 	fileHandler *metafile.TomlFileHandler[PacmanPackagesContent]

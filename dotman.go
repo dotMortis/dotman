@@ -1,11 +1,11 @@
 package main
 
 import (
-	"dotman/bashcmd"
-	"dotman/bashcmd/writer"
-	"dotman/cmd"
-	"dotman/config"
-	"dotman/metafile/pacman"
+	"dotman/internal/bashcmd"
+	"dotman/internal/bashcmd/writer"
+	"dotman/internal/cmd"
+	"dotman/internal/config"
+	"dotman/internal/metafile/pacman"
 	"fmt"
 	"os"
 )
@@ -38,7 +38,7 @@ func main() {
 	}
 	os.Exit(0)
 
-	config, err := config.BaseConfig()
+	config, err := config.Config()
 	if err != nil {
 		fmt.Println(fmt.Errorf("error initializing config: %v", err))
 		os.Exit(1)

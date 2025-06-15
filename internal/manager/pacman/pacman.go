@@ -1,8 +1,8 @@
 package pacman
 
 import (
-	"dotman/bashcmd"
-	"dotman/metafile/pacman"
+	"dotman/internal/bashcmd"
+	"dotman/internal/metafile/pacman"
 	"fmt"
 )
 

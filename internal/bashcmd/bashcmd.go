@@ -2,7 +2,7 @@ package bashcmd
 
 import (
 	"bufio"
-	"dotman/bashcmd/writer"
+	"dotman/internal/bashcmd/writer"
 	"fmt"
 	"os"
 	"os/exec"

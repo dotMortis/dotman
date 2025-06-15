@@ -3,28 +3,28 @@ package config
 import (
 	"fmt"
 
-	"dotman/config/value"
+	"dotman/internal/config/value"
 
 	"github.com/spf13/viper"
 )
 
-type baseConfigValues struct {
+type baseValues struct {
 	Giturl value.Value[string]
 }
 
-func (b *baseConfigValues) validate() error {
+func (b *baseValues) validate() error {
 	if !b.Giturl.IsValid() {
 		return fmt.Errorf("giturl is required")
 	}
 	return nil
 }
 
-func (b *baseConfigValues) String() string {
+func (b *baseValues) String() string {
 	return fmt.Sprintf("{Giturl: %s}", b.Giturl)
 }
 
-func newBaseConfigValues(viper *viper.Viper) (*baseConfigValues, error) {
-	values := &baseConfigValues{
+func newBaseValues(viper *viper.Viper) (*baseValues, error) {
+	values := &baseValues{
 		Giturl: value.NewStringValue("giturl", "", true, viper),
 	}
 	if err := values.validate(); err != nil {

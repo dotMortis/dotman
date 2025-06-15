@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-type baseConfig struct {
+type config struct {
 	viper  *viper.Viper
-	Values *baseConfigValues
+	Values *baseValues
 }
 
-func (c *baseConfig) init() error {
+func (c *config) init() error {
 	c.viper.SetConfigName("dotman.conf")
 	c.viper.SetConfigType("toml")
 	c.viper.AddConfigPath("$HOME/.config/dotman")
@@ -23,7 +23,7 @@ func (c *baseConfig) init() error {
 		return fmt.Errorf("error reading config file: %v", err)
 	}
 
-	values, err := newBaseConfigValues(c.viper)
+	values, err := newBaseValues(c.viper)
 	if err != nil {
 		return fmt.Errorf("error parsing config: %v", err)
 	}
@@ -32,29 +32,29 @@ func (c *baseConfig) init() error {
 	return nil
 }
 
-func (c *baseConfig) String() string {
+func (c *config) String() string {
 	return fmt.Sprintf("{Values: %s}", c.Values)
 }
 
-func newBaseConfig() *baseConfig {
-	return &baseConfig{
+func newConfig() *config {
+	return &config{
 		viper: viper.New(),
 	}
 }
 
 var (
-	config    *baseConfig = nil
-	initError error       = nil
-	once      sync.Once
+	activeConfig *config = nil
+	initError    error   = nil
+	once         sync.Once
 )
 
-func BaseConfig() (*baseConfig, error) {
+func Config() (*config, error) {
 	once.Do(func() {
-		config = newBaseConfig()
-		initError = config.init()
+		activeConfig = newConfig()
+		initError = activeConfig.init()
 	})
 	if initError != nil {
 		return nil, initError
 	}
-	return config, nil
+	return activeConfig, nil
 }
