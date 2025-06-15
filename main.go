@@ -11,10 +11,8 @@ import (
 
 func main() {
 
-	os.Setenv("TERM", "xterm-256color")
-
 	bcmd := bashcmd.NewBashCmd(writer.NewIOWriter())
-	if err := bcmd.Execute("sudo", "apt", "remove", "htop"); err != nil {
+	if err := bcmd.Execute("sudo", "ls", "-al"); err != nil {
 		fmt.Println("Error: ", err)
 	}
 	os.Exit(0)
