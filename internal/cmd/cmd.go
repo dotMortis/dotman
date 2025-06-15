@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"dotman/internal/cmd/packages"
 	"fmt"
 	"os"
 
@@ -24,6 +25,10 @@ a comprehensive environment manager
 - Track and install system packages and applications
 - Backup and restore your system configurations
 - Automate environment setup with simple commands`,
+}
+
+func init() {
+	rootCmd.AddCommand(packages.PackagesCmd)
 }
 
 func Execute() {
