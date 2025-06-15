@@ -10,14 +10,14 @@ import (
 )
 
 type Packages struct {
-	Uninstalled      *pacman.Packages
-	Surplus          *pacman.Packages
-	packagesMetafile *meta.PacmanPackages
-	bashCmd          *bashcmd.BashCmd
+	Uninstalled *pacman.Packages
+	Surplus     *pacman.Packages
+	metafile    *meta.PacmanPackages
+	bashCmd     *bashcmd.BashCmd
 }
 
 func (pks *Packages) Saved() *pacman.Packages {
-	return pks.packagesMetafile.Content().Packages
+	return pks.metafile.Content().Packages
 }
 
 func (pks *Packages) Installed() (*pacman.Packages, error) {
@@ -42,7 +42,10 @@ func (pks *Packages) Reload() error {
 }
 
 func NewPackages(metafile *meta.PacmanPackages, bashCmd *bashcmd.BashCmd) (*Packages, error) {
-	packages := &Packages{}
+	packages := &Packages{
+		metafile: metafile,
+		bashCmd:  bashCmd,
+	}
 	if err := packages.Reload(); err != nil {
 		return nil, fmt.Errorf("failed to load packages: %w", err)
 	}
