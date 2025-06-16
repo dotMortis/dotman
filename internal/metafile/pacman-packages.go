@@ -1,7 +1,7 @@
 package metafile
 
 type PacmanPackages struct {
-	fileHandler *TomlFileHandler[PacmanPackagesContent]
+	fileHandler *TomlFileHandler[PackagesContent]
 }
 
 func (ppm *PacmanPackages) init() error {
@@ -22,7 +22,7 @@ func (ppm *PacmanPackages) ToIgnored(pkg string) {
 	ppm.Content().Saved.Remove(pkg)
 }
 
-func (ppm *PacmanPackages) Content() *PacmanPackagesContent {
+func (ppm *PacmanPackages) Content() *PackagesContent {
 	return ppm.fileHandler.Content
 }
 
@@ -32,7 +32,7 @@ func (ppm *PacmanPackages) Save() error {
 
 func NewPacmanPackages(path string) (*PacmanPackages, error) {
 	ppm := &PacmanPackages{
-		fileHandler: NewTomlFileHandler(path, NewPacmanPackagesContent()),
+		fileHandler: NewTomlFileHandler(path, NewPackagesContent()),
 	}
 	return ppm, ppm.init()
 }

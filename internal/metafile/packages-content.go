@@ -2,13 +2,13 @@ package metafile
 
 import "dotman/internal/packages"
 
-type PacmanPackagesContent struct {
+type PackagesContent struct {
 	Saved   *packages.Packages
 	Ignored *packages.Packages
 }
 
-func NewPacmanPackagesContent() *PacmanPackagesContent {
-	return &PacmanPackagesContent{
+func NewPackagesContent() *PackagesContent {
+	return &PackagesContent{
 		Saved:   &packages.Packages{},
 		Ignored: &packages.Packages{},
 	}
