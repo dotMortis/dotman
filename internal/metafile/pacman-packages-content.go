@@ -1,15 +1,15 @@
 package metafile
 
-import "dotman/internal/pacman"
+import "dotman/internal/packages"
 
 type PacmanPackagesContent struct {
-	Saved   *pacman.Packages
-	Ignored *pacman.Packages
+	Saved   *packages.Packages
+	Ignored *packages.Packages
 }
 
 func NewPacmanPackagesContent() *PacmanPackagesContent {
 	return &PacmanPackagesContent{
-		Saved:   &pacman.Packages{},
-		Ignored: &pacman.Packages{},
+		Saved:   &packages.Packages{},
+		Ignored: &packages.Packages{},
 	}
 }

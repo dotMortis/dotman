@@ -1,37 +1,30 @@
 package manager
 
 import (
-	"dotman/internal/bashcmd"
 	"dotman/internal/metafile"
-	"dotman/internal/pacman"
+	"dotman/internal/packages"
 	"fmt"
 	"slices"
-	"strings"
 )
 
 type Packages struct {
 	metafile *metafile.PacmanPackages
-	bashCmd  *bashcmd.BashCmd
+	commands packages.Commands
 }
 
-func (pks *Packages) Saved() *pacman.Packages {
+func (pks *Packages) Saved() *packages.Packages {
 	return pks.metafile.Content().Saved
 }
 
-func (pks *Packages) Ignored() *pacman.Packages {
+func (pks *Packages) Ignored() *packages.Packages {
 	return pks.metafile.Content().Ignored
 }
 
-func (pks *Packages) Installed(filterIgnored bool) (*pacman.Packages, error) {
-	rawResult, err := pks.bashCmd.ExecuteOutout("pacman", "-Qqen")
+func (pks *Packages) Installed(filterIgnored bool) (*packages.Packages, error) {
+	installed, err := pks.commands.Installed()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get installed packages: %w", err)
 	}
-	splitted := strings.Split(rawResult, "\n")
-	if splitted[len(splitted)-1] == "" {
-		splitted = splitted[:len(splitted)-1]
-	}
-	installed := (&pacman.Packages{}).Add(splitted...)
 	if filterIgnored {
 		ignored := pks.Ignored()
 		for _, pkg := range *ignored {
@@ -41,7 +34,7 @@ func (pks *Packages) Installed(filterIgnored bool) (*pacman.Packages, error) {
 	return installed, nil
 }
 
-func (pks *Packages) Surplus(filterIgnored bool) *pacman.Packages {
+func (pks *Packages) Surplus(filterIgnored bool) *packages.Packages {
 	installed, err := pks.Installed(filterIgnored)
 	if err != nil {
 		return nil
@@ -51,16 +44,16 @@ func (pks *Packages) Surplus(filterIgnored bool) *pacman.Packages {
 		installed.Remove(pkg)
 
 	}
-	return (&pacman.Packages{}).Add(*installed...)
+	return (&packages.Packages{}).Add(*installed...)
 }
 
-func (pks *Packages) Uninstalled() *pacman.Packages {
+func (pks *Packages) Uninstalled() *packages.Packages {
 	installed, err := pks.Installed(true)
 	if err != nil {
 		return nil
 	}
 	saved := pks.Saved()
-	uninstalled := &pacman.Packages{}
+	uninstalled := &packages.Packages{}
 	for _, pkg := range *saved {
 		if !slices.Contains(*installed, pkg) {
 			uninstalled.Add(pkg)
@@ -112,32 +105,23 @@ func (pks *Packages) RemoveFromMetafile(pkg string) bool {
 }
 
 func (pks *Packages) IsPackage(pkg string) (bool, error) {
-	result, err := pks.bashCmd.ExecuteOutout("pacman", "-Ss", fmt.Sprintf("^%s$", pkg))
-	if err != nil {
-		return false, fmt.Errorf("failed to check if package is installed: %w", err)
-	}
-	return strings.Contains(result, fmt.Sprintf("extra/%s ", pkg)), nil
+	return pks.commands.FindPackage(pkg)
 }
 
-func (pks *Packages) InstallMissing(packages *[]string, force bool) (installedPackages *pacman.Packages, error error) {
-	var result = &pacman.Packages{}
+func (pks *Packages) InstallMissing(packagesToInstall *[]string, noConfirm bool) (installedPackages *packages.Packages, error error) {
+	var result = &packages.Packages{}
 	uninstalled := pks.Uninstalled()
-	if len(*packages) >= 0 {
-		for _, pkg := range *packages {
+	if len(*packagesToInstall) >= 0 {
+		for _, pkg := range *packagesToInstall {
 			if !slices.Contains(*uninstalled, pkg) {
 				return result, fmt.Errorf("'%s' is not in the list of available packages", pkg)
 			}
 		}
-		uninstalled = (&pacman.Packages{}).Add(*packages...)
+		uninstalled = (&packages.Packages{}).Add(*packagesToInstall...)
 	}
 
-	var flags = []string{"pacman", "-S"}
-	if force {
-		flags = append(flags, "--noconfirm")
-	}
 	for _, pkg := range *uninstalled {
-		err := pks.bashCmd.Execute("sudo", flags...)
-		if err != nil {
+		if err := pks.commands.Install(pkg, noConfirm); err != nil {
 			return result, fmt.Errorf("failed to install package: %w", err)
 		}
 		result.Add(pkg)
@@ -145,11 +129,10 @@ func (pks *Packages) InstallMissing(packages *[]string, force bool) (installedPa
 	return result, nil
 }
 
-func (pks *Packages) UninstallSurplus() (removedPackages *pacman.Packages, error error) {
-	var result = &pacman.Packages{}
+func (pks *Packages) UninstallSurplus() (removedPackages *packages.Packages, error error) {
+	var result = &packages.Packages{}
 	for _, pkg := range *pks.Surplus(true) {
-		err := pks.bashCmd.Execute("sudo", "pacman", "-Rs", pkg)
-		if err != nil {
+		if err := pks.commands.Uninstall(pkg); err != nil {
 			return result, fmt.Errorf("failed to uninstall package: %w", err)
 		}
 		result.Add(pkg)
@@ -161,10 +144,10 @@ func (pks *Packages) SaveMetafile() error {
 	return pks.metafile.Save()
 }
 
-func NewPackages(metafile *metafile.PacmanPackages, bashCmd *bashcmd.BashCmd) (*Packages, error) {
+func NewPackages(metafile *metafile.PacmanPackages, commands packages.Commands) (*Packages, error) {
 	packages := &Packages{
 		metafile: metafile,
-		bashCmd:  bashCmd,
+		commands: commands,
 	}
 	return packages, nil
 }

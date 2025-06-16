@@ -1,4 +1,4 @@
-package pacman
+package packages
 
 import (
 	"fmt"
