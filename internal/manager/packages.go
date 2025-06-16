@@ -8,7 +8,7 @@ import (
 )
 
 type Packages struct {
-	metafile metafile.Packages
+	metafile *metafile.Packages
 	commands packages.Commands
 }
 
@@ -144,7 +144,7 @@ func (pks *Packages) SaveMetafile() error {
 	return pks.metafile.Save()
 }
 
-func NewPackages(metafile metafile.Packages, commands packages.Commands) (*Packages, error) {
+func NewPackages(metafile *metafile.Packages, commands packages.Commands) (*Packages, error) {
 	packages := &Packages{
 		metafile: metafile,
 		commands: commands,

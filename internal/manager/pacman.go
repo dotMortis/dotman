@@ -8,13 +8,13 @@ import (
 )
 
 type PacmanManager struct {
-	packagesMetafile *metafile.PacmanPackages
+	packagesMetafile *metafile.Packages
 	bashCmd          *bashcmd.BashCmd
 	Packages         *Packages
 }
 
 func NewPacmanManager(path string, bashCmd *bashcmd.BashCmd) (*PacmanManager, error) {
-	packagesMetafile, err := metafile.NewPacmanPackages(path)
+	packagesMetafile, err := metafile.NewPackages(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pacman packages metafile: %w", err)
 	}
