@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"dotman/internal/cmd/packages"
+	pacmanPackages "dotman/internal/cmd/pacman-packages"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -27,7 +27,7 @@ a comprehensive environment manager
 }
 
 func init() {
-	rootCmd.AddCommand(packages.PackagesCmd)
+	rootCmd.AddCommand(pacmanPackages.PackagesCmd)
 }
 
 func Execute() {

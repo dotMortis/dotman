@@ -1,8 +1,8 @@
-package packages
+package pacmanPackages
 
 import (
 	"dotman/internal/bashcmd"
-	"dotman/internal/cmd/packages/workflow"
+	"dotman/internal/cmd/pacman-packages/workflow"
 	"dotman/internal/manager"
 	"log"
 
