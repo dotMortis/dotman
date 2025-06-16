@@ -49,5 +49,5 @@ func init() {
 	savedCmd.Flags().BoolVarP(&listSaved, "list", "l", false, "List saved packages (default)")
 	savedCmd.Flags().BoolVarP(&removeSaved, "remove", "r", false, "Remove selected packages")
 	savedCmd.Flags().BoolVarP(&reorderSaved, "reorder", "o", false, "Reorder selected packages")
-	savedCmd.MarkFlagsMutuallyExclusive("ignore", "list", "remove")
+	savedCmd.MarkFlagsMutuallyExclusive("ignore", "list", "remove", "reorder")
 }
