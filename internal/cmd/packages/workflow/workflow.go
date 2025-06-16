@@ -20,10 +20,11 @@ const (
 	IgnoreActionRemove IgnoreAction = "remove"
 	IgnoreActionList   IgnoreAction = "list"
 
-	MissingActionInstall MissingAction = "install"
-	MissingActionIgnore  MissingAction = "ignore"
-	MissingActionRemove  MissingAction = "remove"
-	MissingActionList    MissingAction = "list"
+	MissingActionInstall      MissingAction = "install"
+	MissingActionForceInstall MissingAction = "force-install"
+	MissingActionIgnore       MissingAction = "ignore"
+	MissingActionRemove       MissingAction = "remove"
+	MissingActionList         MissingAction = "list"
 
 	SurplusActionSave        SurplusAction = "save"
 	SurplusActionIgnore      SurplusAction = "ignore"
@@ -34,7 +35,13 @@ const (
 func RunSliceAction(action string, pm *manager.PacmanManager, selected *[]string) {
 	switch action {
 	case "install":
-		installed, err := pm.Packages.InstallMissing(selected)
+		installed, err := pm.Packages.InstallMissing(selected, false)
+		fmt.Println(installed)
+		if err != nil {
+			fmt.Println("Failed to install packages:", err)
+		}
+	case "force-install":
+		installed, err := pm.Packages.InstallMissing(selected, true)
 		fmt.Println(installed)
 		if err != nil {
 			fmt.Println("Failed to install packages:", err)

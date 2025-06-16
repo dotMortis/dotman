@@ -119,7 +119,7 @@ func (pks *Packages) IsPackage(pkg string) (bool, error) {
 	return strings.Contains(result, fmt.Sprintf("extra/%s ", pkg)), nil
 }
 
-func (pks *Packages) InstallMissing(packages *[]string) (installedPackages *pacman.Packages, error error) {
+func (pks *Packages) InstallMissing(packages *[]string, force bool) (installedPackages *pacman.Packages, error error) {
 	var result = &pacman.Packages{}
 	uninstalled := pks.Uninstalled()
 	if len(*packages) >= 0 {
@@ -131,8 +131,12 @@ func (pks *Packages) InstallMissing(packages *[]string) (installedPackages *pacm
 		uninstalled = (&pacman.Packages{}).Add(*packages...)
 	}
 
+	var flags = []string{"pacman", "-S"}
+	if force {
+		flags = append(flags, "--noconfirm")
+	}
 	for _, pkg := range *uninstalled {
-		err := pks.bashCmd.Execute("sudo", "pacman", "-S", pkg)
+		err := pks.bashCmd.Execute("sudo", flags...)
 		if err != nil {
 			return result, fmt.Errorf("failed to install package: %w", err)
 		}
