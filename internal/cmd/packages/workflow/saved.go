@@ -5,8 +5,6 @@ import (
 	"dotman/internal/ui"
 	"fmt"
 	"log"
-
-	"github.com/charmbracelet/huh"
 )
 
 func Saved(pm *manager.PacmanManager, action SaveAction) {
@@ -22,14 +20,10 @@ func Saved(pm *manager.PacmanManager, action SaveAction) {
 		return
 	}
 
-	options := make([]huh.Option[string], len(*packages))
-	for i, pkg := range *packages {
-		options[i] = huh.NewOption(pkg, pkg)
-	}
-
 	var selected = new([]string)
+	options := ui.NewPackagesSelectOptions(packages, false)
 	form := ui.NewSingleGroupForm(
-		ui.NewMultiSelectPackages(selected, options...),
+		ui.NewMultiSelectPackages(selected, *options...),
 	)
 	if err := form.Run(); err != nil {
 		log.Fatal(err)
