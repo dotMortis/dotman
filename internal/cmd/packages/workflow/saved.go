@@ -2,61 +2,38 @@ package workflow
 
 import (
 	"dotman/internal/manager"
+	"dotman/internal/ui"
 	"fmt"
 	"log"
 
 	"github.com/charmbracelet/huh"
 )
 
-func Saved(pm *manager.PacmanManager) {
-	ignored := pm.Packages.Saved()
+func Saved(pm *manager.PacmanManager, action SaveAction) {
+	packages := pm.Packages.Saved()
 
-	if len(*ignored) == 0 {
+	if len(*packages) == 0 && action != SaveActionList {
 		fmt.Println("No saved packages found UwU")
 		return
 	}
 
-	options := make([]huh.Option[string], len(*ignored))
-	for i, pkg := range *ignored {
+	if action == SaveActionList {
+		ui.PrintPackages(packages)
+		return
+	}
+
+	options := make([]huh.Option[string], len(*packages))
+	for i, pkg := range *packages {
 		options[i] = huh.NewOption(pkg, pkg)
 	}
 
-	var (
-		selected = new([]string)
-		action   = "none"
-	)
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().
-				Options(options...).
-				Title("Select packages").
-				Value(selected).
-				Filterable(true),
-			huh.NewSelect[string]().
-				Options(
-					huh.NewOption("move to ignore", "ignore"),
-					huh.NewOption("remove", "remove"),
-					huh.NewOption("let me out", "none"),
-				).
-				Title("Select action").
-				Value(&action),
-		),
+	var selected = new([]string)
+	form := ui.NewSingleGroupForm(
+		ui.NewMultiSelectPackages(selected, options...),
 	)
 	if err := form.Run(); err != nil {
 		log.Fatal(err)
 		return
 	}
-
-	switch action {
-	case "ignore":
-		for _, pkg := range *selected {
-			pm.Packages.ToIgnored(pkg)
-		}
-		pm.Packages.SaveMetafile()
-	case "remove":
-		for _, pkg := range *selected {
-			pm.Packages.RemoveFromMetafile(pkg)
-		}
-		pm.Packages.SaveMetafile()
-	}
+	RunAction(string(action), pm, selected)
 }

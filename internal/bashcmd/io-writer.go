@@ -7,11 +7,9 @@ import (
 type Color string
 
 const (
-	Red        Color = colorRed
-	Green      Color = colorGreen
-	colorReset       = "\033[0m"
-	colorRed         = "\033[31m"
-	colorGreen       = "\033[32m"
+	Red        Color = "\033[31m"
+	Green      Color = "\033[32m"
+	colorReset       = "\x1b[0m"
 )
 
 type IOWriter struct {

@@ -4,10 +4,15 @@ import (
 	"dotman/internal/bashcmd"
 	"dotman/internal/cmd/packages/workflow"
 	"dotman/internal/manager"
-	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
+)
+
+var (
+	ignoreSaved bool
+	listSaved   bool
+	removeSaved bool
 )
 
 var savedCmd = &cobra.Command{
@@ -22,8 +27,23 @@ var savedCmd = &cobra.Command{
 			return
 		}
 
-		workflow.Saved(pm)
-		fmt.Println("Done...")
-		fmt.Println("See you, UwU")
+		var action workflow.SaveAction
+		switch {
+		case removeSaved:
+			action = workflow.SaveActionRemove
+		case ignoreSaved:
+			action = workflow.SaveActionIgnore
+		default:
+			action = workflow.SaveActionList
+		}
+
+		workflow.Saved(pm, action)
 	},
+}
+
+func init() {
+	savedCmd.Flags().BoolVarP(&ignoreSaved, "ignore", "i", false, "Ignore selected packages")
+	savedCmd.Flags().BoolVarP(&listSaved, "list", "l", false, "List saved packages (default)")
+	savedCmd.Flags().BoolVarP(&removeSaved, "remove", "r", false, "Remove selected packages")
+	savedCmd.MarkFlagsMutuallyExclusive("ignore", "list", "remove")
 }

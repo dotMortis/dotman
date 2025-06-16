@@ -81,13 +81,15 @@ func (pks *Packages) ToSaved(pkg string) error {
 	return nil
 }
 
-func (pks *Packages) ToIgnored(pkg string) error {
-	isPackage, err := pks.IsPackage(pkg)
-	if err != nil {
-		return fmt.Errorf("failed to check if package is installed: %w", err)
-	}
-	if !isPackage {
-		return fmt.Errorf("'%s' is not a valid package", pkg)
+func (pks *Packages) ToIgnored(pkg string, force bool) error {
+	if !force {
+		isPackage, err := pks.IsPackage(pkg)
+		if err != nil {
+			return fmt.Errorf("failed to check if package is installed: %w", err)
+		}
+		if !isPackage {
+			return fmt.Errorf("'%s' is not a valid package", pkg)
+		}
 	}
 	pks.metafile.ToIgnored(pkg)
 	return nil
