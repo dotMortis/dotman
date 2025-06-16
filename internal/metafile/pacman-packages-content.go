@@ -1,4 +1,4 @@
-package pacman
+package metafile
 
 import "dotman/internal/pacman"
 

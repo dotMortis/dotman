@@ -1,8 +1,8 @@
-package pacman
+package manager
 
 import (
 	"dotman/internal/bashcmd"
-	meta "dotman/internal/metafile/pacman"
+	"dotman/internal/metafile"
 	"dotman/internal/pacman"
 	"fmt"
 	"slices"
@@ -10,7 +10,7 @@ import (
 )
 
 type Packages struct {
-	metafile *meta.PacmanPackages
+	metafile *metafile.PacmanPackages
 	bashCmd  *bashcmd.BashCmd
 }
 
@@ -28,6 +28,9 @@ func (pks *Packages) Installed(filterIgnored bool) (*pacman.Packages, error) {
 		return nil, fmt.Errorf("failed to get installed packages: %w", err)
 	}
 	splitted := strings.Split(rawResult, "\n")
+	if splitted[len(splitted)-1] == "" {
+		splitted = splitted[:len(splitted)-1]
+	}
 	installed := (&pacman.Packages{}).Add(splitted...)
 	if filterIgnored {
 		ignored := pks.Ignored()
@@ -105,9 +108,19 @@ func (pks *Packages) IsPackage(pkg string) (bool, error) {
 	return strings.Contains(result, fmt.Sprintf("extra/%s ", pkg)), nil
 }
 
-func (pks *Packages) InstallMissing() (installedPackages *pacman.Packages, error error) {
+func (pks *Packages) InstallMissing(packages *[]string) (installedPackages *pacman.Packages, error error) {
 	var result = &pacman.Packages{}
-	for _, pkg := range *pks.Uninstalled() {
+	uninstalled := pks.Uninstalled()
+	if len(*packages) >= 0 {
+		for _, pkg := range *packages {
+			if !slices.Contains(*uninstalled, pkg) {
+				return result, fmt.Errorf("'%s' is not in the list of available packages", pkg)
+			}
+		}
+		uninstalled = (&pacman.Packages{}).Add(*packages...)
+	}
+
+	for _, pkg := range *uninstalled {
 		err := pks.bashCmd.Execute("sudo", "pacman", "-S", pkg)
 		if err != nil {
 			return result, fmt.Errorf("failed to install package: %w", err)
@@ -133,7 +146,7 @@ func (pks *Packages) SaveMetafile() error {
 	return pks.metafile.Save()
 }
 
-func NewPackages(metafile *meta.PacmanPackages, bashCmd *bashcmd.BashCmd) (*Packages, error) {
+func NewPackages(metafile *metafile.PacmanPackages, bashCmd *bashcmd.BashCmd) (*Packages, error) {
 	packages := &Packages{
 		metafile: metafile,
 		bashCmd:  bashCmd,

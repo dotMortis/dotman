@@ -11,5 +11,8 @@ var PackagesCmd = &cobra.Command{
 }
 
 func init() {
-	PackagesCmd.AddCommand(uninstalledCmd)
+	PackagesCmd.AddCommand(missingCmd)
+	PackagesCmd.AddCommand(ignoreCmd)
+	PackagesCmd.AddCommand(savedCmd)
+	PackagesCmd.AddCommand(surplusCmd)
 }

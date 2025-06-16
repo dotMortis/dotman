@@ -1,19 +1,19 @@
-package pacman
+package manager
 
 import (
 	"dotman/internal/bashcmd"
-	meta "dotman/internal/metafile/pacman"
+	"dotman/internal/metafile"
 	"fmt"
 )
 
 type PacmanManager struct {
-	packagesMetafile *meta.PacmanPackages
+	packagesMetafile *metafile.PacmanPackages
 	bashCmd          *bashcmd.BashCmd
 	Packages         *Packages
 }
 
 func NewPacmanManager(path string, bashCmd *bashcmd.BashCmd) (*PacmanManager, error) {
-	packagesMetafile, err := meta.NewPacmanPackages(path)
+	packagesMetafile, err := metafile.NewPacmanPackages(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pacman packages metafile: %w", err)
 	}

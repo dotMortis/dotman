@@ -1,9 +1,7 @@
-package pacman
-
-import "dotman/internal/metafile"
+package metafile
 
 type PacmanPackages struct {
-	fileHandler *metafile.TomlFileHandler[PacmanPackagesContent]
+	fileHandler *TomlFileHandler[PacmanPackagesContent]
 }
 
 func (ppm *PacmanPackages) init() error {
@@ -30,7 +28,7 @@ func (ppm *PacmanPackages) Save() error {
 
 func NewPacmanPackages(path string) (*PacmanPackages, error) {
 	ppm := &PacmanPackages{
-		fileHandler: metafile.NewTomlFileHandler(path, NewPacmanPackagesContent()),
+		fileHandler: NewTomlFileHandler(path, NewPacmanPackagesContent()),
 	}
 	return ppm, ppm.init()
 }
