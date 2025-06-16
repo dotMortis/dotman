@@ -5,9 +5,9 @@ import (
 )
 
 var PackagesCmd = &cobra.Command{
-	Use:   "pkg",
-	Short: "Manage packages",
-	Long:  `Manage packages installed on the system`,
+	Use:   "pac",
+	Short: "Manage pacman packages",
+	Long:  `Manage pacman packages installed on the system`,
 }
 
 func init() {
