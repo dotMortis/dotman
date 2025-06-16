@@ -30,5 +30,5 @@ func Ignored(pm *manager.PacmanManager, action IgnoreAction) {
 		return
 	}
 
-	RunAction(string(action), pm, selected)
+	RunSliceAction(string(action), pm, selected)
 }

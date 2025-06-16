@@ -81,6 +81,15 @@ func (pks *Packages) ToSaved(pkg string) error {
 	return nil
 }
 
+func (pks *Packages) ToSavedIndex(pkg string, index int) error {
+	saved := pks.Saved()
+	if !slices.Contains(*saved, pkg) {
+		return fmt.Errorf("'%s' is not in the list of saved packages", pkg)
+	}
+	pks.metafile.ToSavedIndex(pkg, index)
+	return nil
+}
+
 func (pks *Packages) ToIgnored(pkg string, force bool) error {
 	if !force {
 		isPackage, err := pks.IsPackage(pkg)
@@ -132,7 +141,7 @@ func (pks *Packages) InstallMissing(packages *[]string) (installedPackages *pacm
 	return result, nil
 }
 
-func (pks *Packages) UninstallSurplus() (removePackages *pacman.Packages, error error) {
+func (pks *Packages) UninstallSurplus() (removedPackages *pacman.Packages, error error) {
 	var result = &pacman.Packages{}
 	for _, pkg := range *pks.Surplus(true) {
 		err := pks.bashCmd.Execute("sudo", "pacman", "-Rs", pkg)

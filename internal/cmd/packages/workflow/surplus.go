@@ -29,5 +29,5 @@ func Surplus(pm *manager.PacmanManager, action SurplusAction) {
 		log.Fatal(err)
 		return
 	}
-	RunAction(string(action), pm, selected)
+	RunSliceAction(string(action), pm, selected)
 }

@@ -29,5 +29,5 @@ func Missing(pm *manager.PacmanManager, action MissingAction) {
 		log.Fatal(err)
 		return
 	}
-	RunAction(string(action), pm, selected)
+	RunSliceAction(string(action), pm, selected)
 }

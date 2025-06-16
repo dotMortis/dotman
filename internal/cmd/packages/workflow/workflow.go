@@ -11,9 +11,10 @@ type MissingAction string
 type SurplusAction string
 
 const (
-	SaveActionIgnore SaveAction = "ignore"
-	SaveActionRemove SaveAction = "remove"
-	SaveActionList   SaveAction = "list"
+	SaveActionIgnore  SaveAction = "ignore"
+	SaveActionRemove  SaveAction = "remove"
+	SaveActionList    SaveAction = "list"
+	SaveActionReorder SaveAction = "reorder"
 
 	IgnoreActionSave   IgnoreAction = "save"
 	IgnoreActionRemove IgnoreAction = "remove"
@@ -30,7 +31,7 @@ const (
 	SurplusActionList        SurplusAction = "list"
 )
 
-func RunAction(action string, pm *manager.PacmanManager, selected *[]string) {
+func RunSliceAction(action string, pm *manager.PacmanManager, selected *[]string) {
 	switch action {
 	case "install":
 		installed, err := pm.Packages.InstallMissing(selected)
@@ -65,4 +66,12 @@ func RunAction(action string, pm *manager.PacmanManager, selected *[]string) {
 		}
 		pm.Packages.SaveMetafile()
 	}
+}
+
+func RunReorderAction(pm *manager.PacmanManager, selected string, index int) error {
+	if err := pm.Packages.ToSavedIndex(selected, index); err != nil {
+		return fmt.Errorf("failed to reorder package: %w", err)
+	}
+	pm.Packages.SaveMetafile()
+	return nil
 }

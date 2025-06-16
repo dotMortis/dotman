@@ -28,6 +28,14 @@ func NewMultiSelectPackages(selected *[]string, options ...huh.Option[string]) *
 		Height(min(len(options)+1, 10))
 }
 
+func NewSelectPackages(selected *string, options ...huh.Option[string]) *huh.Select[string] {
+	return huh.NewSelect[string]().
+		Options(options...).
+		Title("Select package").
+		Value(selected).
+		Height(min(len(options)+1, 10))
+}
+
 func PrintPackages(packages *pacman.Packages) {
 	for _, item := range *packages {
 		fmt.Println(item)

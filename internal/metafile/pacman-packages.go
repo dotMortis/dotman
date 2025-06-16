@@ -13,6 +13,10 @@ func (ppm *PacmanPackages) ToSaved(pkg string) {
 	ppm.Content().Ignored.Remove(pkg)
 }
 
+func (ppm *PacmanPackages) ToSavedIndex(pkg string, index int) {
+	ppm.Content().Saved.ToIndex(pkg, index)
+}
+
 func (ppm *PacmanPackages) ToIgnored(pkg string) {
 	ppm.Content().Ignored.Add(pkg)
 	ppm.Content().Saved.Remove(pkg)

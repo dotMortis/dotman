@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	ignoreSaved bool
-	listSaved   bool
-	removeSaved bool
+	ignoreSaved  bool
+	listSaved    bool
+	removeSaved  bool
+	reorderSaved bool
 )
 
 var savedCmd = &cobra.Command{
@@ -33,6 +34,8 @@ var savedCmd = &cobra.Command{
 			action = workflow.SaveActionRemove
 		case ignoreSaved:
 			action = workflow.SaveActionIgnore
+		case reorderSaved:
+			action = workflow.SaveActionReorder
 		default:
 			action = workflow.SaveActionList
 		}
@@ -45,5 +48,6 @@ func init() {
 	savedCmd.Flags().BoolVarP(&ignoreSaved, "ignore", "i", false, "Ignore selected packages")
 	savedCmd.Flags().BoolVarP(&listSaved, "list", "l", false, "List saved packages (default)")
 	savedCmd.Flags().BoolVarP(&removeSaved, "remove", "r", false, "Remove selected packages")
+	savedCmd.Flags().BoolVarP(&reorderSaved, "reorder", "o", false, "Reorder selected packages")
 	savedCmd.MarkFlagsMutuallyExclusive("ignore", "list", "remove")
 }
