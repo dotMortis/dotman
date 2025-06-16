@@ -39,10 +39,3 @@ func PrintPackages(packages *pacman.Packages) {
 		fmt.Printf("%s%s%s\n", color, item, reset)
 	}
 }
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
