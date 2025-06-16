@@ -36,7 +36,12 @@ func (c *YayCommands) Install(pkg string, noConfirm bool) error {
 		flags = append(flags, "--noconfirm")
 	}
 	flags = append(flags, pkg)
-	return c.bashCmd.Execute("sudo", flags...)
+	if err := c.bashCmd.Execute("sudo", flags...); err != nil {
+		return fmt.Errorf("failed to install package: %w", err)
+	}
+	if err := c.bashCmd.Execute("sudo", "pacman", "-D", "--asexplicit", pkg); err != nil {
+		return fmt.Errorf("failed to add package to explicit dependencies: %w", err)
+	}
 }
 
 func (c *YayCommands) Uninstall(pkg string) error {
