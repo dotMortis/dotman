@@ -7,15 +7,15 @@ import (
 	"log"
 )
 
-func Surplus(pm *manager.PacmanManager, action SurplusAction) {
-	packages := pm.Packages.Surplus(true)
+func Ignored(pm manager.Manager, action IgnoreAction) {
+	packages := pm.Packages().Ignored()
 
-	if len(*packages) == 0 && action != SurplusActionList {
-		fmt.Println("No surplus packages found UwU")
+	if len(*packages) == 0 && action != IgnoreActionList {
+		fmt.Println("No ignored packages found UwU")
 		return
 	}
 
-	if action == SurplusActionList {
+	if action == IgnoreActionList {
 		ui.PrintPackages(packages)
 		return
 	}
@@ -29,5 +29,6 @@ func Surplus(pm *manager.PacmanManager, action SurplusAction) {
 		log.Fatal(err)
 		return
 	}
+
 	RunSliceAction(string(action), pm, selected)
 }

@@ -20,12 +20,12 @@ func (c *config) init() error {
 	c.viper.AddConfigPath(".")
 
 	if err := c.viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("error reading config file: %v", err)
+		return fmt.Errorf("[Config] error reading config file:\n%w", err)
 	}
 
 	values, err := newBaseValues(c.viper)
 	if err != nil {
-		return fmt.Errorf("error parsing config: %v", err)
+		return fmt.Errorf("[Config] error parsing config:\n%w", err)
 	}
 	c.Values = values
 

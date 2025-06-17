@@ -10,12 +10,12 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-func Saved(pm *manager.PacmanManager, action SaveAction) {
+func Saved(pm manager.Manager, action SaveAction) {
 	if action == SaveActionReorder {
 		reorderSaved(pm)
 		return
 	}
-	packages := pm.Packages.Saved()
+	packages := pm.Packages().Saved()
 
 	if len(*packages) == 0 && action != SaveActionList {
 		fmt.Println("No saved packages found UwU")
@@ -38,9 +38,9 @@ func Saved(pm *manager.PacmanManager, action SaveAction) {
 
 }
 
-func reorderSaved(pm *manager.PacmanManager) {
+func reorderSaved(pm manager.Manager) {
 	for {
-		packages := pm.Packages.Saved()
+		packages := pm.Packages().Saved()
 
 		if len(*packages) == 0 {
 			fmt.Println("No saved packages found UwU")

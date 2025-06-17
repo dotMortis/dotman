@@ -32,53 +32,53 @@ const (
 	SurplusActionList        SurplusAction = "list"
 )
 
-func RunSliceAction(action string, pm *manager.PacmanManager, selected *[]string) {
+func RunSliceAction(action string, pm manager.Manager, selected *[]string) {
 	switch action {
 	case "install":
-		installed, err := pm.Packages.InstallMissing(selected, false)
+		installed, err := pm.Packages().InstallMissing(selected, false)
 		fmt.Println(installed)
 		if err != nil {
 			fmt.Println("Failed to install packages:", err)
 		}
 	case "force-install":
-		installed, err := pm.Packages.InstallMissing(selected, true)
+		installed, err := pm.Packages().InstallMissing(selected, true)
 		fmt.Println(installed)
 		if err != nil {
 			fmt.Println("Failed to install packages:", err)
 		}
 	case "ignore":
 		for _, pkg := range *selected {
-			if err := pm.Packages.ToIgnored(pkg, false); err != nil {
+			if err := pm.Packages().ToIgnored(pkg, false); err != nil {
 				fmt.Println("Failed to ignore package:", err)
 			}
 		}
-		pm.Packages.SaveMetafile()
+		pm.Packages().SaveMetafile()
 	case "force-ignore":
 		for _, pkg := range *selected {
-			if err := pm.Packages.ToIgnored(pkg, true); err != nil {
+			if err := pm.Packages().ToIgnored(pkg, true); err != nil {
 				fmt.Println("Failed to ignore package:", err)
 			}
 		}
-		pm.Packages.SaveMetafile()
+		pm.Packages().SaveMetafile()
 	case "remove":
 		for _, pkg := range *selected {
-			pm.Packages.RemoveFromMetafile(pkg)
+			pm.Packages().RemoveFromMetafile(pkg)
 		}
-		pm.Packages.SaveMetafile()
+		pm.Packages().SaveMetafile()
 	case "save":
 		for _, pkg := range *selected {
-			if err := pm.Packages.ToSaved(pkg); err != nil {
+			if err := pm.Packages().ToSaved(pkg); err != nil {
 				fmt.Println("Failed to save package:", err)
 			}
 		}
-		pm.Packages.SaveMetafile()
+		pm.Packages().SaveMetafile()
 	}
 }
 
-func RunReorderAction(pm *manager.PacmanManager, selected string, index int) error {
-	if err := pm.Packages.ToSavedIndex(selected, index); err != nil {
-		return fmt.Errorf("failed to reorder package: %w", err)
+func RunReorderAction(pm manager.Manager, selected string, index int) error {
+	if err := pm.Packages().ToSavedIndex(selected, index); err != nil {
+		return fmt.Errorf("[Workflow] failed to reorder package:\n%w", err)
 	}
-	pm.Packages.SaveMetafile()
+	pm.Packages().SaveMetafile()
 	return nil
 }

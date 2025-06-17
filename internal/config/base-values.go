@@ -28,7 +28,7 @@ func newBaseValues(viper *viper.Viper) (*baseValues, error) {
 		Giturl: value.NewStringValue("giturl", "", true, viper),
 	}
 	if err := values.validate(); err != nil {
-		return nil, fmt.Errorf("error validating config: %v", err)
+		return nil, fmt.Errorf("[BaseValues] error validating config:\n%v", err)
 	}
 	return values, nil
 }

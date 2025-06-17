@@ -18,7 +18,7 @@ func (b *BashCmd) Execute(command string, args ...string) error {
 	cmd.Stderr = b.writer
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to start command: %v", err)
+		return fmt.Errorf("[BashCmd] failed to start command:\n%w", err)
 	}
 	return nil
 }
@@ -27,7 +27,7 @@ func (b *BashCmd) ExecuteOutout(command string, args ...string) (string, error) 
 	cmd := exec.Command(command, args...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return "", fmt.Errorf("failed to execute command: %v", err)
+		return "", fmt.Errorf("[BashCmd] failed to execute command:\n%w", err)
 	}
 	return string(output), nil
 }

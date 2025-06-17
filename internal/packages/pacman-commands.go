@@ -13,7 +13,7 @@ type PacmanCommands struct {
 func (c *PacmanCommands) Installed() (*Packages, error) {
 	rawResult, err := c.bashCmd.ExecuteOutout("pacman", "-Qqen")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get installed packages: %w", err)
+		return nil, fmt.Errorf("[PacmanCommands] failed to get installed packages:\n%w", err)
 	}
 	splitted := strings.Split(rawResult, "\n")
 	if splitted[len(splitted)-1] == "" {
@@ -25,7 +25,7 @@ func (c *PacmanCommands) Installed() (*Packages, error) {
 func (c *PacmanCommands) FindPackage(pkg string) (bool, error) {
 	result, err := c.bashCmd.ExecuteOutout("pacman", "-Ss", fmt.Sprintf("^%s$", pkg))
 	if err != nil {
-		return false, fmt.Errorf("failed to check if package is installed: %w", err)
+		return false, fmt.Errorf("[PacmanCommands] failed to check if package is installed:\n%w", err)
 	}
 	return strings.Contains(result, fmt.Sprintf("extra/%s ", pkg)), nil
 }
@@ -37,10 +37,10 @@ func (c *PacmanCommands) Install(pkg string, noConfirm bool) error {
 	}
 	flags = append(flags, pkg)
 	if err := c.bashCmd.Execute("sudo", flags...); err != nil {
-		return fmt.Errorf("failed to install package: %w", err)
+		return fmt.Errorf("[PacmanCommands] failed to install package:\n%w", err)
 	}
 	if err := c.bashCmd.Execute("sudo", "pacman", "-D", "--asexplicit", pkg); err != nil {
-		return fmt.Errorf("failed to add package to explicit dependencies: %w", err)
+		return fmt.Errorf("[PacmanCommands] failed to add package to explicit dependencies:\n%w", err)
 	}
 	return nil
 }

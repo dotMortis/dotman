@@ -7,19 +7,20 @@ import (
 	"log"
 )
 
-func Missing(pm *manager.PacmanManager, action MissingAction) {
-	packages := pm.Packages.Uninstalled()
-
-	if len(*packages) == 0 && action != MissingActionList {
-		fmt.Println("No missing packages found UwU")
+func Surplus(pm manager.Manager, action SurplusAction) {
+	packages, err := pm.Packages().Surplus(true)
+	if err != nil {
+		log.Fatal(err)
 		return
 	}
-
-	if action == MissingActionList {
+	if len(*packages) == 0 && action != SurplusActionList {
+		fmt.Println("No surplus packages found UwU")
+		return
+	}
+	if action == SurplusActionList {
 		ui.PrintPackages(packages)
 		return
 	}
-
 	var selected = new([]string)
 	options := ui.NewPackagesSelectOptions(packages, false)
 	form := ui.NewSingleGroupForm(

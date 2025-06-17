@@ -10,21 +10,25 @@ import (
 type PacmanManager struct {
 	packagesMetafile *metafile.Packages
 	bashCmd          *bashcmd.BashCmd
-	Packages         *Packages
+	packages         *Packages
+}
+
+func (pm *PacmanManager) Packages() *Packages {
+	return pm.packages
 }
 
 func NewPacmanManager(metafilePath string, bashCmd *bashcmd.BashCmd) (*PacmanManager, error) {
 	packagesMetafile, err := metafile.NewPackages(metafilePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create pacman packages metafile: %w", err)
+		return nil, fmt.Errorf("[PacmanManager] failed to create pacman packages metafile:\n%w", err)
 	}
 	packages, err := NewPackages(packagesMetafile, packages.NewPacmanCommands(bashCmd))
 	if err != nil {
-		return nil, fmt.Errorf("failed to load packages: %w", err)
+		return nil, fmt.Errorf("[PacmanManager] failed to load packages:\n%w", err)
 	}
 	return &PacmanManager{
+		packages:         packages,
 		packagesMetafile: packagesMetafile,
 		bashCmd:          bashCmd,
-		Packages:         packages,
 	}, nil
 }

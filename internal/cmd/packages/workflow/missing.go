@@ -7,19 +7,20 @@ import (
 	"log"
 )
 
-func Ignored(pm *manager.PacmanManager, action IgnoreAction) {
-	packages := pm.Packages.Ignored()
-
-	if len(*packages) == 0 && action != IgnoreActionList {
-		fmt.Println("No ignored packages found UwU")
+func Missing(pm manager.Manager, action MissingAction) {
+	packages, err := pm.Packages().Uninstalled()
+	if err != nil {
+		log.Fatal(err)
 		return
 	}
-
-	if action == IgnoreActionList {
+	if len(*packages) == 0 && action != MissingActionList {
+		fmt.Println("No missing packages found UwU")
+		return
+	}
+	if action == MissingActionList {
 		ui.PrintPackages(packages)
 		return
 	}
-
 	var selected = new([]string)
 	options := ui.NewPackagesSelectOptions(packages, false)
 	form := ui.NewSingleGroupForm(
@@ -29,6 +30,5 @@ func Ignored(pm *manager.PacmanManager, action IgnoreAction) {
 		log.Fatal(err)
 		return
 	}
-
 	RunSliceAction(string(action), pm, selected)
 }

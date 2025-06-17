@@ -1,7 +1,10 @@
 package cmd
 
 import (
-	pacmanPackages "dotman/internal/cmd/pacman-packages"
+	"dotman/internal/bashcmd"
+	"dotman/internal/cmd/packages"
+	"dotman/internal/manager"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -27,7 +30,20 @@ a comprehensive environment manager
 }
 
 func init() {
-	rootCmd.AddCommand(pacmanPackages.PackagesCmd)
+	bcmd := bashcmd.NewBashCmd(bashcmd.NewIOWriter(bashcmd.Green))
+	pacmanPM, err := manager.NewPacmanManager("temp/pacman-packages.toml", bcmd)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	rootCmd.AddCommand(packages.NewPackagesCmd("pac", "Pacman", pacmanPM))
+
+	yayPM, err := manager.NewYayManager("temp/yay-packages.toml", bcmd)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	rootCmd.AddCommand(packages.NewPackagesCmd("yay", "Yay", yayPM))
 }
 
 func Execute() {
